@@ -1,0 +1,28 @@
+import json, os, subprocess
+from pathlib import Path
+ROOT = Path(__file__).parent
+
+CIRCOM = ROOT / "tools" / "circom.exe"
+SNARKJS = ROOT / "node_modules" / ".bin" / "snarkjs.cmd"
+PTAU = ROOT / "powersOfTau28_hez_final_08.ptau"
+
+CIRCUIT = ROOT / "circom" / "logreg.circom"
+INPUT = ROOT / "zkp" / "input.json"
+
+
+# 5. Beweis verifizieren
+
+CIRCOM_DIR = ROOT / "circom"
+
+VERIFICATION_KEY = CIRCOM_DIR / "verification_key.json"
+PUBLIC_JSON = CIRCOM_DIR / "public.json"
+PROOF_JSON = CIRCOM_DIR / "proof.json"  # je nachdem, wo proof.json liegt
+subprocess.run(
+    [
+        str(SNARKJS), "groth16", "verify",
+        str(VERIFICATION_KEY),
+        str(PUBLIC_JSON),
+        str(PROOF_JSON)
+    ],
+    check=True
+)
